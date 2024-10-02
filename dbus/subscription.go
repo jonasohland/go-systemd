@@ -45,6 +45,15 @@ func (c *Conn) Unsubscribe() error {
 	return c.sigobj.Call("org.freedesktop.systemd1.Manager.Unsubscribe", 0).Store()
 }
 
+func (c *Conn) hasSubscribers() bool {
+	c.subStateSubscriber.Lock()
+	defer c.subStateSubscriber.Unlock()
+	c.propertiesSubscriber.Lock()
+	defer c.propertiesSubscriber.Unlock()
+
+	return c.subStateSubscriber.updateCh != nil || c.propertiesSubscriber.updateCh != nil
+}
+
 func (c *Conn) dispatch() {
 	ch := make(chan *dbus.Signal, signalBuffer)
 
@@ -61,8 +70,7 @@ func (c *Conn) dispatch() {
 				c.jobComplete(signal)
 			}
 
-			if c.subStateSubscriber.updateCh == nil &&
-				c.propertiesSubscriber.updateCh == nil {
+			if !c.hasSubscribers() {
 				continue
 			}
 
