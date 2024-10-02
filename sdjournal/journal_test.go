@@ -27,7 +27,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/coreos/go-systemd/v22/journal"
+	"github.com/jonasohland/go-systemd/v22/journal"
 )
 
 func TestJournalFollow(t *testing.T) {
@@ -340,7 +340,7 @@ func TestJournalGetEntry(t *testing.T) {
 }
 
 // Check for incorrect read into small buffers,
-// see https://github.com/coreos/go-systemd/issues/172
+// see https://github.com/jonasohland/go-systemd/issues/172
 func TestJournalReaderSmallReadBuffer(t *testing.T) {
 	// Write a long entry ...
 	delim := "%%%%%%"
